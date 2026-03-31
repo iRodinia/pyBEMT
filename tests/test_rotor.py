@@ -1,6 +1,6 @@
 
 import unittest
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from pybemt.rotor import Rotor, Section
 from pybemt.airfoil import load_airfoil
 from pybemt.fluid import Fluid
@@ -9,7 +9,7 @@ from scipy import optimize
 
 class TestRotor(unittest.TestCase):
     def setUp(self):
-        cfg = SafeConfigParser()
+        cfg = ConfigParser()
         cfg.read('test_config.ini')
 
         self.rotor = Rotor(cfg, 'rotor', 'rotor')
@@ -42,7 +42,7 @@ class TestRotor(unittest.TestCase):
 
 class TestSection(unittest.TestCase):
     def setUp(self):
-        cfg = SafeConfigParser()
+        cfg = ConfigParser()
         cfg.read('test_config.ini')
         # Correct phi and induction factors for hand-calculated case
         self.v = 1.0

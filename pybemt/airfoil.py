@@ -104,8 +104,11 @@ def load_airfoil(name):
     
     a.alpha_, a.Cl_, a.Cd_ = np.loadtxt(path, skiprows=14, unpack=True)
     
-    a.Cl_func = interp1d(a.alpha_, a.Cl_, kind='quadratic')
-    a.Cd_func = interp1d(a.alpha_, a.Cd_, kind='quadratic')
+    # Create interpolation functions with boundary value handling
+    # For angles outside the data range, use the boundary values (extrapolate=False)
+    # This is safer than linear extrapolation for airfoil data
+    a.Cl_func = interp1d(a.alpha_, a.Cl_, kind='quadratic', bounds_error=False, fill_value=(a.Cl_[0], a.Cl_[-1]))
+    a.Cd_func = interp1d(a.alpha_, a.Cd_, kind='quadratic', bounds_error=False, fill_value=(a.Cd_[0], a.Cd_[-1]))
             
     return a
 

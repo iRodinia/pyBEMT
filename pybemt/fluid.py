@@ -8,7 +8,7 @@ class Fluid:
     """
     Class for loading fluid properties from configuration file and providing them to the solver.
 
-    :param configparser.SafeConfigParser cfg: Configuration object
+    :param configparser.ConfigParser cfg: Configuration object
     """
 
     def __init__(self, cfg):

@@ -1,0 +1,13 @@
+Introduction:
+
+- This is the explanation of the structure of airfoil.dat files in the "airfoils/" folder.
+
+Structure:
+
+ - Front 14 lines: Header, description of the airfoil. [Skipped while reading the data]
+
+ - Airfoil data: 3 columns of data
+
+    angle-of-attack (alpha) [in degrees],  lift coefficient (Cl),  drag coefficient (Cd)
+
+    The Cl and Cd will be interpolated using interp1d in 'quadratic' mode.

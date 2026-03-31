@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import pandas as pd
 from scipy import optimize
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from math import radians, degrees, sqrt, pi
 from .fluid import Fluid
 from .rotor import Rotor
@@ -24,7 +24,7 @@ class Solver:
     def __init__(self, config_path):
 
         # Read configuration file
-        cfg = SafeConfigParser()
+        cfg = ConfigParser()
         cfg.read(config_path)
         
         # Case
@@ -39,7 +39,6 @@ class Solver:
         else:
             self.coaxial = False
         
-
         # Rotor
         if cfg.has_section('turbine'):
             self.mode = 'turbine'

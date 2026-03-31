@@ -1,11 +1,11 @@
 
 import unittest
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from pybemt.fluid import Fluid
 
 class TestFluid(unittest.TestCase):
     def setUp(self):
-        cfg = SafeConfigParser()
+        cfg = ConfigParser()
         cfg.read('test_config.ini')
 
         self.fluid = Fluid(cfg)

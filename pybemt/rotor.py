@@ -12,7 +12,7 @@ class Rotor:
     """
     Holds rotor properties and a list of all airfoil sections.
 
-    :param configparser.SafeConfigParser cfg: Configuration object
+    :param configparser.ConfigParser cfg: Configuration object
     :param string name: Name of rotor
     :param string mode: Solver mode
     """
