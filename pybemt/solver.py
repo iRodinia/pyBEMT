@@ -263,7 +263,7 @@ class Solver:
         self.T, self.Q, self.P = self.solve(self.rotor, self.twist, self.rpm, self.v_inf, self.rotor.diameter)
        
         print('--- Results ---')
-        print('Trust (N):\t',self.T)
+        print('Thrust (N):\t',self.T)
         print('Torque (Nm):\t',self.Q)
         print('Power (W):\t',self.P)
 
@@ -273,7 +273,7 @@ class Solver:
            
             self.T2, self.Q2, self.P2 = self.solve(self.rotor2, self.twist2, self.rpm2, self.v_s, self.r_s)
 
-            print('Trust 2 (N):\t',self.T2)
+            print('Thrust 2 (N):\t',self.T2)
             print('Torque 2 (Nm):\t',self.Q2)
             print('Power 2 (W):\t',self.P2)
 
