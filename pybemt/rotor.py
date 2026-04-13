@@ -241,11 +241,29 @@ class Section:
         
         CT, CQ = self.airfoil_forces(phi)
         
+        # Small tolerance to avoid division by zero
+        eps = 1e-10
+        
+        # Protect against division by zero for CT and CQ
+        if abs(CT) < eps:
+            CT = eps if CT >= 0 else -eps
+        if abs(CQ) < eps:
+            CQ = eps if CQ >= 0 else -eps
+        
         kappa = 4*F*sin(phi)**2/(self.sigma*CT)
         kappap = 4*F*sin(phi)*cos(phi)/(self.sigma*CQ)
 
-        a = 1.0/(kappa - C)
-        ap = 1.0/(kappap + C)
+        # Protect against division by zero for induction factors
+        kappa_denom = kappa - C
+        kappap_denom = kappap + C
+        
+        if abs(kappa_denom) < eps:
+            kappa_denom = eps if kappa_denom >= 0 else -eps
+        if abs(kappap_denom) < eps:
+            kappap_denom = eps if kappap_denom >= 0 else -eps
+        
+        a = 1.0/kappa_denom
+        ap = 1.0/kappap_denom
         
         return a, ap
         
@@ -264,10 +282,24 @@ class Section:
         """
         # Function to solve for a single blade element
         C = self.C
+        
+        # Small tolerance to avoid division by zero
+        eps = 1e-10
 
         a, ap = self.induction_factors(phi)
         
-        resid = sin(phi)/(1 + C*a) - v_inf*cos(phi)/(omega*self.radius*(1 - C*ap))
+        # Safely compute denominators with numerical stability
+        denom1 = 1 + C*a
+        denom2 = 1 - C*ap
+        
+        # Protect against division by zero
+        if abs(denom1) < eps:
+            denom1 = eps if denom1 >= 0 else -eps
+        if abs(denom2) < eps:
+            denom2 = eps if denom2 >= 0 else -eps
+        
+        # Compute residual
+        resid = sin(phi)/denom1 - v_inf*cos(phi)/(omega*self.radius*denom2)
         
         self.a = a
         self.ap = ap
@@ -306,12 +338,19 @@ class Section:
         r = self.radius
         rho = fluid.rho
         
+        # Small tolerance to avoid division by zero
+        eps = 1e-10
+        
         a, ap = self.induction_factors(phi)
         CT, CQ = self.airfoil_forces(phi)
         
         v = (1 + C*a)*v_inf
         vp = (1 - C*ap)*omega*r
-        U = sqrt(v**2 + vp**2)   
+        U = sqrt(v**2 + vp**2)
+        
+        # Protect against division by zero for Reynolds number calculation
+        if U < eps:
+            U = eps
         
         self.Re = rho*U*self.chord/fluid.mu
             
