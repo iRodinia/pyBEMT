@@ -185,6 +185,31 @@ class Solver:
         
         return df, sections
     
+    def _find_bisect_bracket(self, sec, v, omega, a0=0.01*pi, b0=0.9*pi, nsteps=20):
+        """Search for a valid bracket [a, b] where sec.func(a) and sec.func(b) have opposite sign."""
+        fa = sec.func(a0, v, omega)
+        if np.isnan(fa):
+            return None
+
+        if np.sign(fa) == 0:
+            return a0, a0
+
+        angles = np.linspace(a0, b0, nsteps)
+        prev_a = a0
+        prev_f = fa
+        for a in angles[1:]:
+            fb = sec.func(a, v, omega)
+            if np.isnan(fb):
+                prev_a = a
+                prev_f = fb
+                continue
+            if np.sign(prev_f) * np.sign(fb) < 0:
+                return prev_a, a
+            prev_a = a
+            prev_f = fb
+
+        return None
+
     def solve(self, rotor, twist, rpm, v_inflow, r_inflow):
         """
         Find inflow angle and calculate forces for a single rotor given rotational speed, inflow velocity and radius.
@@ -215,14 +240,14 @@ class Solver:
             if self.solver == 'brute':
                 phi = self.brute_solve(sec, v, omega)
             else:
-                try:
-                    phi = optimize.bisect(sec.func, 0.01*pi, 0.9*pi, args=(v, omega))
-                except ValueError as e:
-                    print(e)
-                    print('Bisect failed, switching to brute solver')
+                bracket = self._find_bisect_bracket(sec, v, omega)
+                if bracket is not None:
+                    a, b = bracket
+                    phi = optimize.bisect(sec.func, a, b, args=(v, omega))
+                else:
+                    print('Bisect invalid bracket for section radius', sec.radius, '- switching to brute solver')
                     phi = self.brute_solve(sec, v, omega)
 
-            
             dT, dQ = sec.forces(phi, v, omega, self.fluid)
 
             # Integrate
@@ -261,11 +286,6 @@ class Solver:
         :rtype: tuple
         """
         self.T, self.Q, self.P = self.solve(self.rotor, self.twist, self.rpm, self.v_inf, self.rotor.diameter)
-       
-        print('--- Results ---')
-        print('Thrust (N):\t',self.T)
-        print('Torque (Nm):\t',self.Q)
-        print('Power (W):\t',self.P)
 
         # Coaxial calculaction
         if self.coaxial:
