@@ -175,7 +175,8 @@ class Solver:
                     T,Q,P,sec_df,T2,Q2,P2,sec_df2 = self.run()
                     J,CT,CQ,CP,eta = self.rotor_coeffs(T, Q, P)
                     J,CT2,CQ2,CP2,eta = self.rotor_coeffs(T2, Q2, P2)
-                    df.iloc[i] = [p, T, Q, P, T2, Q2, P2, J, CT, CQ, CP, eta, CT2, CP2, eta2]
+                    df.iloc[i] = [p, T, Q, P, T2, Q2, P2, J, CT, CQ, CP, eta, CT2, CP2, eta]  
+                    # df.iloc[i] = [p, T, Q, P, T2, Q2, P2, J, CT, CQ, CP, eta, CT2, CP2, eta2], eta2 is undefined, but not used in the output
                 else:
                     T,Q,P,sec_df = self.run()
                     J,CT,CQ,CP,eta = self.rotor_coeffs(T, Q, P)
